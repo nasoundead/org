@@ -25,3 +25,102 @@
 - b
 - c
 - d
+* ditta
+#+begin_src ditaa :file test_ditaa.png :cmdline -r -s 0.8
+
+    +-----------+        +---------+
+    |    PLC    |        |         |
+    |  Network  +<------>+   PLC   +<---=---------+
+    |    cRED   |        |  c707   |              |
+    +-----------+        +----+----+              |
+                              ^                   |
+                              |                   |
+                              |  +----------------|-----------------+
+                              |  |                |                 |
+                              v  v                v                 v
+      +----------+       +----+--+--+      +-------+---+      +-----+-----+       Windows clients
+      |          |       |          |      |           |      |           |      +----+      +----+
+      | Database +<----->+  Shared  +<---->+ Executive +<-=-->+ Operator  +<---->|cYEL| . . .|cYEL|
+      |   c707   |       |  Memory  |      |   c707    |      | Server    |      |    |      |    |
+      +--+----+--+       |{d} cGRE  |      +------+----+      |   c707    |      +----+      +----+
+         ^    ^          +----------+             ^           +-------+---+
+         |    |                                   |
+         |    +--------=--------------------------+
+         v
++--------+--------+
+|                 |
+| Millwide System |            -------- Data ---------
+| cBLU            |            --=----- Signals ---=--
++-----------------+
+
+#+END_SRC
+
+#+results:
+[[file:test_ditaa.png]]
+
+* uml
+#+BEGIN_SRC plantuml :file test_uml.png  :cmdline -charset UTF-8
+title Example Sequence Diagram
+activate Client
+Client -> Server: Session Initiation
+note right: Client requests new session
+activate Server
+Client <-- Server: Authorization Request
+note left: Server requires authentication
+Client -> Server: Authorization Response
+note right: Client provides authentication details
+Server --> Client: Session Token
+note left: Session established
+deactivate Server
+Client -> Client: Saves token
+deactivate Client
+#+END_SRC
+
+#+results:
+[[file:test_uml.png]]
+
+* dot
+#+BEGIN_SRC dot :file test_graphviz.png :cmdline -Kdot -Tpng
+digraph G {
+  size="8,6"
+  ratio=expand
+  edge [dir=both]
+  plcnet [shape=box, label="PLC Network"]
+  subgraph cluster_wrapline {
+    label="Wrapline Control System"
+    color=purple
+    subgraph {
+    rank=same
+    exec
+    sharedmem [style=filled, fillcolor=lightgrey, shape=box]
+    }
+    edge[style=dotted, dir=none]
+    exec -> opserver
+    exec -> db
+    plc -> exec
+    edge [style=line, dir=both]
+    exec -> sharedmem
+    sharedmem -> db
+    plc -> sharedmem
+    sharedmem -> opserver
+  }
+  plcnet -> plc [constraint=false]
+  millwide [shape=box, label="Millwide System"]
+  db -> millwide
+
+  subgraph cluster_opclients {
+    color=blue
+    label="Operator Clients"
+    rankdir=LR
+    labelloc=b
+    node[label=client]
+    opserver -> client1
+    opserver -> client2
+    opserver -> client3
+  }
+}
+
+#+end_src
+
+#+results:
+[[file:test_graphviz.png]]
