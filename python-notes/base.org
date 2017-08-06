@@ -1,0 +1,37 @@
+
+* sting format
+#+BEGIN_SRC python :results output
+  print '{0},{1}'.format('kzc', 18)
+  print '{},{}'.format('kzc', 18)
+  print '{1},{0},{1}'.format('kzc', 18)
+  print '{:>8}'.format('189')
+  print '{:0>8}'.format('189')
+  print '{:a>8}'.format('189')
+  print '{:.2f}'.format(321.333445)
+  print '{:b}'.format(17)
+  print '{:d}'.format(0xF)
+  print "{:o}".format(17)
+  print "{:x}".format(17)
+  print '{:,}'.format(1234567890)
+  print '{0[0]},{0[1]}'.format(['kpc', 18])
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+kzc,18
+kzc,18
+18,kzc,18
+     189
+00000189
+aaaaa189
+321.33
+10001
+15
+21
+11
+1,234,567,890
+kpc,18
+#+end_example
+
+
+* 装饰器
