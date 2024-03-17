@@ -1,0 +1,189 @@
+ Python
+** Python Code Blocks
+*** Non-session mode example
+In non-session mode, the python code block will be wrapped in a function,
+so to return a value (in :results value mode) you have to use a return statement.
+#+begin_src python :results output
+  def foo(x):
+    if x>0:
+      return x+1
+    else:
+      return x-1
+  print("foo")
+#+end_src
+
+#+RESULTS:
+: foo
+
+啥参数都没有的时候，不打印标准输出，仅打印最后return的语句
+#+begin_src python
+  def foo():
+     print("bar")
+     return "foo"
+  return foo()
+#+end_src
+
+#+RESULTS:
+: foo
+
+*** Session mode example
+In session mode, the last statement's value will be returned if it is a top-level expression;
+you should not use a return statement.
+# don't use return statement
+#+begin_src python :session
+  def foo(x):
+    if x>0:
+      return x+1
+    else:
+      return x-1
+  foo(1)
+#+end_src
+
+#+RESULTS:
+: 2
+
+*** plots
+**** Automatic plotting in Org 9.7+
+
+Starting in Org 9.7, ob-python can automatically use matplotlib to save graphics results,
+using the header arg :results graphics file.
+The behavior depends on whether value or output results are used.
+For value results, the last line should return a matplotlib Figure object to plot.
+For output results, the current figure (as returned by pyplot.gcf()) is cleared before evaluation,
+and then plotted afterwards.
+
+Here is an example using output results:
+#+begin_src python :results graphics file output :file images/boxplot.svg
+  import matplotlib.pyplot as plt
+  import seaborn as sns
+  plt.figure(figsize=(5, 5))
+  tips = sns.load_dataset("tips")
+  sns.boxplot(x="day", y="tip", data=tips)
+#+end_src
+
+#+RESULTS:
+[[file:images/boxplot.svg]]
+
+And here is the same example using value results:
+
+#+begin_src python :results graphics file value :file images/boxplot2.svg
+  import matplotlib.pyplot as plt
+  import seaborn as sns
+  plt.figure(figsize=(5, 5))
+  tips = sns.load_dataset("tips")
+  sns.boxplot(x="day", y="tip", data=tips)
+  return plt.gcf()
+#+end_src
+
+#+RESULTS:
+[[file:images/boxplot2.svg]]
+
+#+begin_src python :results graphics file value :file images/plot.svg
+  import matplotlib, numpy
+  import matplotlib.pyplot as plt
+  fig=plt.figure(figsize=(4,2))
+  x=numpy.linspace(-15,15)
+  plt.plot(numpy.sin(x)/x)
+  fig.tight_layout()
+  return plt.gcf()
+#+end_src
+
+#+RESULTS:
+[[file:images/plot.svg]]
+#+begin_src python :results graphics file output :file images/plot2.svg
+  import pandas as pd
+  import matplotlib.pyplot as plot
+
+  df = pd.DataFrame({"A": [1,2,3,4,5], "B": [2,3,4,5,6]})
+  print(df)
+  df.plot()
+  plot.gcf()
+#+end_src
+
+#+RESULTS:
+[[file:images/plot2.svg]]
+** Jupyter
+
+#+begin_src jupyter-python :kernel python3 :async yes
+  print("hello world")
+  123
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+: hello world
+: 123
+:END:
+
+
+#+begin_src jupyter-python
+  import matplotlib, numpy
+  import matplotlib.pyplot as plt
+  x=numpy.linspace(-15,15,1000)
+  plt.plot(x,numpy.sin(x)/x)
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x228b44028d0> |
+[[./.ob-jupyter/f56f5c1b6335488f422f725c3c2efb84028a3eeb.png]]
+:END:
+
+#+begin_src jupyter-python
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  x = np.linspace(-5, 5, num=1000)
+  y = np.piecewise(
+      x,
+      [x < -1, (-1 <= x) & (x <= 1), x > 1],
+      [lambda x: x ** 2, lambda x: x, lambda x: x ** 3],
+  )
+
+  plt.plot(x, y)
+  plt.show()
+#+end_src
+
+#+RESULTS:
+[[./.ob-jupyter/736b41d119c9c602c8698ec98925c9fe2a70c3e9.png]]
+
+
+#+begin_src jupyter-python
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  x = np.linspace(-2, 2, 1000)
+  y = np.piecewise(
+      x,
+      [x < -1, (x > -1) & (x < 1), x > 1],
+      [lambda x: 0, lambda x: abs(x), lambda x: 0],
+  )
+
+  plt.plot(x, y)
+  plt.show()
+#+end_src
+
+#+RESULTS:
+[[./.ob-jupyter/623a949202d78e09ee7b951e55ebadfc8c14aef9.png]]
+
+#+begin_src jupyter-python
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  x = np.linspace(-1, 2, num=1000)
+  y = np.piecewise(
+      x,
+      [(x <= 0), (x > 0) & (x < 1), (x >= 1)],
+      [
+          lambda x: 0,
+          lambda x: np.exp(-1 / x),
+          lambda x: 0,
+      ],
+  )
+
+  plt.plot(x, y)
+  plt.show()
+#+end_src
+
+#+RESULTS:
+[[./.ob-jupyter/c875c619d185634c7ab51c2335e0de8af6f24612.png]]
