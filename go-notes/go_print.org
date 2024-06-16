@@ -1,0 +1,28 @@
+* go print
+
+** Printing a struct
+
+For example, there are three format specifiers for printing a struct.
+
+%v – It will print only values. The field name will not be printed. This is the default way of printing a struct when using Println
+%+v – It will print both field and value.
+%#v – It will print the struct, also both field name and value
+
+#+begin_src go :imports '("fmt")
+  type Person struct {
+        name string
+        age  int
+  }
+  p := Person{
+        name: "John",
+        age:  13,
+  }
+  fmt.Printf("%v\n", p)
+  fmt.Printf("%+v\n", p)
+  fmt.Printf("%#v\n", p)
+#+end_src
+
+#+RESULTS:
+: {John 13}
+: {name:John age:13}
+: main.Person{name:"John", age:13}
