@@ -1,0 +1,43 @@
+* go rune
+
+** Rune
+*** string to []rune
+a rune is a builtin type in Go and it’s the alias of int32. Rune represents a Unicode code point in Go. It doesn’t matter how many bytes the code point occupies, it can be represented by a rune. Let’s modify the above program to print characters using a rune.
+
+#+begin_src go :imports '("fmt")
+  s := "Hello world"
+  fmt.Printf("Characters: ")
+  runes := []rune(s)
+  for i := 0; i < len(runes); i++ {
+        fmt.Printf("%c ", runes[i])
+  }
+#+end_src
+
+#+RESULTS:
+: Characters: H e l l o   w o r l d
+
+#+begin_src go :imports '("fmt")
+  s := "Señor"
+  fmt.Printf("Characters: ")
+  runes := []rune(s)
+  for i := 0; i < len(runes); i++ {
+        fmt.Printf("%c ", runes[i])
+  }
+#+end_src
+
+#+RESULTS:
+: Characters: S e ñ o r
+
+*** Accessing individual runes using for range loop
+
+The above program is a perfect way to iterate over the individual runes of a string. But Go offers us a much easier way to do this using the for range loop.
+
+#+begin_src go :imports '("fmt")
+  name := "Señor"
+  for _, rune := range name {
+        fmt.Printf("%c ", rune)
+  }
+#+end_src
+
+#+RESULTS:
+: S e ñ o r
