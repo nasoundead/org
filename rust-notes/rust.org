@@ -29,3 +29,87 @@ i: 4
 i: 5
 i: 6
 #+end_example
+
+* 线程
+** thread::spawn
+#+begin_src rust
+  use std::thread;
+  use std::time::Duration;
+  let handle = thread::spawn(|| {
+      for i in 1..10 {
+        println!("Thread number: {i}");
+        thread::sleep(Duration::from_millis(1));
+      }
+  });
+  handle.join().unwrap();
+
+  for i in 1..5 {
+      println!("Main Thread number: {i}");
+      thread::sleep(Duration::from_millis(1));
+  }
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Thread number: 1
+Thread number: 2
+Thread number: 3
+Thread number: 4
+Thread number: 5
+Thread number: 6
+Thread number: 7
+Thread number: 8
+Thread number: 9
+Main Thread number: 1
+Main Thread number: 2
+Main Thread number: 3
+Main Thread number: 4
+#+end_example
+
+
+** 所有权转移
+#+begin_src rust
+  let v = vec![1,2,3];
+  let handle = std::thread::spawn(|| {
+      println!("vec： {v:?}");
+  });
+  handle.join().unwrap();
+#+end_src
+
+#+RESULTS:
+: error: Could not compile `cargoC0AzlC`.
+
+#+begin_src rust
+  let v = vec![1,2,3];
+  let handle = std::thread::spawn(move || {
+      println!("vec： {v:?}");
+  });
+  handle.join().unwrap();
+#+end_src
+
+#+RESULTS:
+: vec： [1, 2, 3]
+
+
+** 信道 std::sync::mpsc
+mpsc: multiple producer single consumer, 多个生产者单个消费者,Rust标准库实现信道的方式意味着一个信道可以有多个生产者的发送（Sending）端，但是只能有一个接收端（Receiving）。想象一下多条小河小溪最终汇成大河：所有通过小河发出的东西最后都会来到下游的大河。
+
+#+begin_src rust
+  use std::sync::mpsc;
+  use std::thread;
+
+  let (tx, rx) = mpsc::channel();
+
+  thread::spawn(move || {
+      let msg: String = "Hello, world!".into();
+      println!("Message {msg} sended from thread now!");
+      tx.send(msg).unwrap();
+  });
+
+  let echo = rx.recv().unwrap();
+  println!("echo: {}", echo)
+#+end_src
+
+#+RESULTS:
+: Message Hello, world! sended from thread now!
+: echo: Hello, world!
